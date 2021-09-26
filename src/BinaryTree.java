@@ -1,20 +1,71 @@
+import java.util.ArrayList;
+import java.util.List;
+
+// code reused (and adjusted) from 2nd year Algorithms and Data structures assignment
+
 
 public class BinaryTree<Key extends Comparable<Key>, Value> {
-	private Node root;
+	public Node root;
+	public ArrayList<Integer> path1;
+	public ArrayList<Integer> path2;
+	
+	BinaryTree() {
+		path1 = new ArrayList<Integer>();
+		path2 = new ArrayList<Integer>();
+	}
 	/**
 	 * Private node class.
 	 */
+	
+	
 	private class Node {
-		private Key key;           // sorted by key
-		private Value val;         // associated data
-		private Node left, right;  // left and right subtrees
-		private int N;             // number of nodes in subtree
+		public Key key;           // sorted by key
+		public Value val;         // associated data
+		public Node left, right;  // left and right subtrees
+		public int N;             // number of nodes in subtree
 
 		public Node(Key key, Value val, int N) {
 			this.key = key;
 			this.val = val;
 			this.N = N;
 		}
+	}
+	
+
+	public void findPaths(Key target1, Key target2)
+	{
+		path1.clear();
+		path2.clear();
+		findPath(root, target1, path1);
+		findPath(root, target2, path2);
+	}
+	
+	private boolean findPath(Node node, Key target, List<Integer> path)
+	{
+		// check if the root is a valid node
+		if(node == null)
+		{
+			return false;
+		}
+		
+		path.add((Integer) node.key);
+		
+		if(node.key.compareTo(target) == 0)
+		{
+			return true;
+		}
+		
+		if (node.left != null && findPath(node.left, target, path)) {
+            return true;
+        }
+ 
+        if (node.right != null && findPath(node.right, target, path)) {
+            return true;
+        }
+        
+        path.remove(path.size()-1);
+		
+		return false;
 	}
 
 	// is the symbol table empty?
@@ -261,9 +312,9 @@ public class BinaryTree<Key extends Comparable<Key>, Value> {
 	 *
 	 * @return a multi-line string with the pretty ascii picture of the tree.
 	 */
-	public String prettyPrintKeys() {
+	public void prettyPrintKeys() {
 
-		return prettyPrint(root, "");
+		System.out.println(prettyPrint(root, ""));
 	}
 
 	private String prettyPrint(Node node, String prefix)
