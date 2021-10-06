@@ -16,8 +16,6 @@ public class BinaryTree<Key extends Comparable<Key>, Value> {
 	/**
 	 * Private node class.
 	 */
-	
-	
 	private class Node {
 		public Key key;           // sorted by key
 		public Value val;         // associated data
@@ -36,8 +34,12 @@ public class BinaryTree<Key extends Comparable<Key>, Value> {
 	{
 		path1.clear();
 		path2.clear();
-		findPath(root, target1, path1);
-		findPath(root, target2, path2);
+		if (!findPath(root, target1, path1)) {
+			path1 = null;
+		}
+		if (!findPath(root, target2, path2)) {
+			path2 = null;
+		}
 	}
 	
 	private boolean findPath(Node node, Key target, List<Integer> path)
@@ -78,46 +80,6 @@ public class BinaryTree<Key extends Comparable<Key>, Value> {
 	private int size(Node x) {
 		if (x == null) return 0;
 		else return x.N;
-	}
-
-	/**
-	 *  Search BST for given key.
-	 *  Does there exist a key-value pair with given key?
-	 *
-	 *  @param key the search key
-	 *  @return true if key is found and false otherwise
-	 */
-	public boolean contains(Key key) {
-		return get(key) != null;
-	}
-
-	/**
-	 *  Search BST for given key.
-	 *  What is the value associated with given key?
-	 *
-	 *  @param key the search key
-	 *  @return value associated with the given key if found, or null if no such key exists.
-	 */
-	public Value get(Key key) { return get(root, key); }
-
-	private Value get(Node x, Key key) {
-		if (x == null)
-		{
-			return null;
-		}
-		int cmp = key.compareTo(x.key);
-		if (cmp < 0) 
-		{
-			return get(x.left, key);
-		}
-		else if (cmp > 0) 
-		{
-			return get(x.right, key);
-		}
-		else 
-		{
-			return x.val;
-		}
 	}
 
 	/**
@@ -164,110 +126,6 @@ public class BinaryTree<Key extends Comparable<Key>, Value> {
 	}
 
 	/**
-	 * Tree height.
-	 *
-	 * Asymptotic worst-case running time using Theta notation: Theta(N) where N is the number of nodes (bst.N)
-	 * 
-	 * Explanation: The worst case for checking the height is when the tree has deteriorated into a linked list and is 
-	 * N in height rather than a balanced lg(N)
-	 *
-	 * @return the number of links from the root to the deepest leaf.
-	 *
-	 * Example 1: for an empty tree this should return -1.
-	 * Example 2: for a tree with only one node it should return 0.
-	 * Example 3: for the following tree it should return 2.
-	 *   B
-	 *  / \
-	 * A   C
-	 *      \
-	 *       D
-	 */
-	public int height() {
-		return height(root);
-	}
-
-	private int height(Node node)
-	{
-		// case 1 : node == NULL
-		if(node == null) {
-			return -1;
-		}
-		// case 2 : if the left and right subtrees are null
-		else if (node.left == null && node.right == null)
-		{
-			return 0;
-		}
-		// case 3 : if just the left subtree is null
-		else if(node.left == null) 
-		{
-			return 1 + height(node.right);
-		}
-		// case 4 : if just the right subtree is null
-		else if(node.right == null)
-		{
-			return 1 + height(node.left);
-		}
-		// case 5 : node.left.N > node.right.N return 1 + height(node.left)
-		else if(node.left.N > node.right.N) {
-			return 1 + height(node.left);
-		}
-		// case 6 : node.right.N > node.left.N return 1 + height(node.right)
-		else
-		{
-			return 1 + height(node.right);
-		}
-	}
-
-	/**
-	 * Median key.
-	 * If the tree has N keys k1 < k2 < k3 < ... < kN, then their median key 
-	 * is the element at position (N+1)/2 (where "/" here is integer division)
-	 * 
-	 * Asymptotic worst-case running time using Theta notation: Theta(h)
-	 * 
-	 * Explanation: The worst case for checking the height is when the tree has deteriorated into a linked list and is 
-	 * N in height rather than a balanced lg(N)
-	 *
-	 * @return the median key, or null if the tree is empty.
-	 */
-	public Key median() {
-		if (isEmpty()) 
-		{
-			return null;
-		}
-		int n = size(root);
-		return select((n-1)/2);
-	}
-
-	/* private method only used in the median() method 
-	 * returns the nth key that is in the list.
-	 * parameters: position of desired key
-	 * returns: key
-	 */
-
-	private Key select(int position) {
-		Node node = select(root, position);
-		return node.key;
-	}
-
-	private Node select(Node x, int position) {
-		int temp = size(x.left);
-		if (temp > position) 
-		{
-			return select(x.left, position);
-		}
-		else if (temp < position) 
-		{
-			return select(x.right, position-temp-1);
-		}
-		else 
-		{
-			return x;
-		}
-	}
-
-
-	/**
 	 * Print all keys of the tree in a sequence, in-order.
 	 * That is, for each node, the keys in the left subtree should appear before the key in the node.
 	 * Also, for each node, the keys in the right subtree should appear before the key in the node.
@@ -288,7 +146,7 @@ public class BinaryTree<Key extends Comparable<Key>, Value> {
 	 * 										(((()A(()C()))E((()H(()M()))R()))S(()X()))
 	 *
 	 * @return a String with all keys in the tree, in order, parenthesized.
-	 */
+	 */ 
 	public String printKeysInOrder() {
 		if (isEmpty()) return "()";
 		return "(" + printKeysInOrder(root) + ")";
@@ -339,7 +197,7 @@ public class BinaryTree<Key extends Comparable<Key>, Value> {
 	 *
 	 * @param key the key to delete
 	 */
-	public void delete(Key key)
+	private void delete(Key key)
 	{ 
 		root = delete(root, key); 
 	}
@@ -403,4 +261,5 @@ public class BinaryTree<Key extends Comparable<Key>, Value> {
 			return node;
 		}
 	}
+
 }
